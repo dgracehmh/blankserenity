@@ -1,0 +1,502 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.hmhco.hmhqe</groupId>
+    <artifactId>blankserenity</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <name>Blank Serenity</name>
+
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <serenity.version>1.9.4</serenity.version>
+        <serenity.cucumber.version>1.9.4</serenity.cucumber.version>
+        <selenium.version>3.10.0</selenium.version>
+        <serenity.maven.version>1.9.4</serenity.maven.version>
+        <maven.failsafe.plugin.version>2.20.1</maven.failsafe.plugin.version>
+        <maven.compiler.plugin>3.6.1</maven.compiler.plugin>
+
+
+        <browserstack.local.version>1.0.2</browserstack.local.version>
+
+        <sonar.language>java</sonar.language>
+
+
+    </properties>
+
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>${selenium.version}</version>
+
+        </dependency>
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>1.7.1</version>
+        </dependency>
+        <dependency>
+            <groupId>net.serenity-bdd</groupId>
+            <artifactId>serenity-core</artifactId>
+            <version>${serenity.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.serenity-bdd</groupId>
+            <artifactId>serenity-cucumber</artifactId>
+            <version>${serenity.cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.serenity-bdd.maven.plugins</groupId>
+            <artifactId>serenity-maven-plugin</artifactId>
+            <version>${serenity.maven.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.24</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>1.7.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.lambdaj</groupId>
+            <artifactId>lambdaj</artifactId>
+            <version>2.3.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-core</artifactId>
+            <version>1.19.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>1.19.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey.contribs</groupId>
+            <artifactId>jersey-multipart</artifactId>
+            <version>1.19.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.browserstack</groupId>
+            <artifactId>browserstack-local-java</artifactId>
+            <version>${browserstack.local.version}</version>
+        </dependency>
+
+
+    </dependencies>
+
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.17</version>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <phase>test</phase>
+                        <configuration>
+                            <configLocation>checkstyle.xml</configLocation>
+                            <encoding>UTF-8</encoding>
+                            <consoleOutput>false</consoleOutput>
+                            <failsOnError>false</failsOnError>
+                            <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                            <suppressionsLocation>checkstyle_suppressions.xml</suppressionsLocation>
+
+                        </configuration>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.plugin}</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>net.serenity-bdd.maven.plugins</groupId>
+                <artifactId>serenity-maven-plugin</artifactId>
+                <version>${serenity.maven.version}</version>
+                <executions>
+                    <execution>
+                        <id>serenity-reports</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>aggregate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+
+        <profile>
+            <id>docker-parallel</id>
+            <properties>
+                <!-- Testing -->
+                <!--
+                    .*()FeatureTest.class         <== Match all *FeatureTest.class runners
+                    .*(Cat|Dog)FeatureTest.class  <== Match Cat AND Dog test runners
+                    testrunner.prefixes default to empty (i.e. ALL), but can be overridden via command line / CI
+                 -->
+                <testrunner.prefixes></testrunner.prefixes>
+                <failsafe.testrunner>%regex[.*(${testrunner.prefixes})TestSuite.class]</failsafe.testrunner>
+                <parallel.tests>5</parallel.tests>
+            </properties>
+
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.sonarsource.scanner.maven</groupId>
+                            <artifactId>sonar-maven-plugin</artifactId>
+                            <version>3.2</version>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+                <plugins>
+
+                    <!-- Echo properties before launching failsafe integration tests -->
+
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>${maven.failsafe.plugin.version}</version>
+                        <configuration>
+                            <reportsDirectory>${project.build.directory}/failsafe-reports/e2e</reportsDirectory>
+                            <summaryFile>${project.build.directory}/failsafe-reports/e2e/failsafe-summary.xml
+                            </summaryFile>
+                            <reuseForks>true</reuseForks>
+                            <!--<argLine>-Xmx512M -XX:MaxPermSize=512M</argLine>-->
+                            <failIfNoTests>false</failIfNoTests>
+                            <skipITs>false</skipITs>
+                            <includes>
+                                <include>${failsafe.testrunner}</include>
+                            </includes>
+                            <parallel>suites</parallel>
+                            <threadCount>${parallel.tests}</threadCount>
+                            <forkCount>${parallel.tests}</forkCount>
+
+                            <systemPropertyVariables>
+                                <webdriver.remote.driver>chrome</webdriver.remote.driver>
+                                <webdriver.remote.url>http://localhost:4444/wd/hub</webdriver.remote.url>
+                            </systemPropertyVariables>
+
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>net.serenity-bdd.maven.plugins</groupId>
+                        <artifactId>serenity-maven-plugin</artifactId>
+                        <version>${serenity.maven.version}</version>
+                        <executions>
+                            <execution>
+                                <id>serenity-reports</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>aggregate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>local</id>
+            <properties>
+                <!-- Testing -->
+                <!--
+                    .*()FeatureTest.class         <== Match all *FeatureTest.class runners
+                    .*(Cat|Dog)FeatureTest.class  <== Match Cat AND Dog test runners
+                    testrunner.prefixes default to empty (i.e. ALL), but can be overridden via command line / CI
+                 -->
+                <testrunner.prefixes></testrunner.prefixes>
+                <failsafe.testrunner>%regex[.*(${testrunner.prefixes})TestSuite.class]</failsafe.testrunner>
+                <parallel.tests>1</parallel.tests>
+            </properties>
+
+            <build>
+                <plugins>
+
+                    <!-- Echo properties before launching failsafe integration tests -->
+
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>${maven.failsafe.plugin.version}</version>
+                        <configuration>
+                            <reportsDirectory>${project.build.directory}/failsafe-reports/e2e</reportsDirectory>
+                            <summaryFile>${project.build.directory}/failsafe-reports/e2e/failsafe-summary.xml
+                            </summaryFile>
+                            <forkCount>1</forkCount>
+                            <reuseForks>false</reuseForks>
+                            <argLine>-XX:MaxPermSize=2G</argLine>
+                            <failIfNoTests>false</failIfNoTests>
+                            <skipITs>false</skipITs>
+                            <includes>
+                                <include>${failsafe.testrunner}</include>
+                            </includes>
+                            <parallel>classes</parallel>
+                            <threadCount>${parallel.tests}</threadCount>
+                            <forkCount>${parallel.tests}</forkCount>
+
+
+                            <systemPropertyVariables>
+                                <webdriver.driver>provided</webdriver.driver>
+                                <webdriver.provided.type>mydriver</webdriver.provided.type>
+                                <webdriver.provided.mydriver>com.hmhco.hmhqe.customdrivers.CustomChromeDriver</webdriver.provided.mydriver>
+                                <serenity.driver.capabilities>mydriver</serenity.driver.capabilities>
+                            </systemPropertyVariables>
+
+
+
+                        </configuration>
+
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>net.serenity-bdd.maven.plugins</groupId>
+                        <artifactId>serenity-maven-plugin</artifactId>
+                        <version>${serenity.maven.version}</version>
+                        <executions>
+                            <execution>
+                                <id>serenity-reports</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>aggregate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+
+        <profile>
+            <id>browserstack</id>
+            <properties>
+                <!-- Testing -->
+                <!--
+                    .*()FeatureTest.class         <== Match all *FeatureTest.class runners
+                    .*(Cat|Dog)FeatureTest.class  <== Match Cat AND Dog test runners
+                    testrunner.prefixes default to empty (i.e. ALL), but can be overridden via command line / CI
+                 -->
+                <testrunner.prefixes></testrunner.prefixes>
+                <failsafe.testrunner>%regex[.*(${testrunner.prefixes})TestSuite.class]</failsafe.testrunner>
+                <parallel.tests>4</parallel.tests>
+            </properties>
+
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.sonarsource.scanner.maven</groupId>
+                            <artifactId>sonar-maven-plugin</artifactId>
+                            <version>3.2</version>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+                <plugins>
+
+                    <!-- Echo properties before launching failsafe integration tests -->
+
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>${maven.failsafe.plugin.version}</version>
+                        <configuration>
+                            <reportsDirectory>${project.build.directory}/failsafe-reports/e2e</reportsDirectory>
+                            <summaryFile>${project.build.directory}/failsafe-reports/e2e/failsafe-summary.xml
+                            </summaryFile>
+                            <reuseForks>true</reuseForks>
+                            <!--<argLine>-Xmx512M -XX:MaxPermSize=512M</argLine>-->
+                            <failIfNoTests>false</failIfNoTests>
+                            <skipITs>false</skipITs>
+                            <includes>
+                                <include>${failsafe.testrunner}</include>
+                            </includes>
+                            <parallel>classes</parallel>
+                            <threadCount>${parallel.tests}</threadCount>
+                            <forkCount>${parallel.tests}</forkCount>
+
+                            <systemPropertyVariables>
+                                <webdriver.driver>provided</webdriver.driver>
+                                <webdriver.provided.type>mydriver</webdriver.provided.type>
+                                <webdriver.provided.mydriver>com.hmhco.hmhqe.customdrivers.BrowserStackSerenityDriver</webdriver.provided.mydriver>
+                                <serenity.driver.capabilities>mydriver</serenity.driver.capabilities>
+                            </systemPropertyVariables>
+
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>net.serenity-bdd.maven.plugins</groupId>
+                        <artifactId>serenity-maven-plugin</artifactId>
+                        <version>${serenity.maven.version}</version>
+                        <executions>
+                            <execution>
+                                <id>serenity-reports</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>aggregate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+
+        <profile>
+            <id>localenv</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/test/resources/environment/int</directory>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+        <profile>
+            <id>int</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/test/resources/environment/int</directory>
+                    </resource>
+                </resources>
+
+            </build>
+        </profile>
+        <profile>
+            <id>cert</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/test/resources/environment/cert</directory>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+        <profile>
+            <id>cert-review</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/test/resources/environment/cert-review</directory>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/test/resources/environment/prod</directory>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+        <profile>
+            <id>prod-review</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/test/resources/environment/prod-review</directory>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+
+        <profile>
+            <id>sonar</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+
+                <sonar.host.url>http://sonarqubehmh.devel.hmheng-qe.brnp.internal</sonar.host.url>
+
+            </properties>
+        </profile>
+
+
+    </profiles>
+
+
+</project>
