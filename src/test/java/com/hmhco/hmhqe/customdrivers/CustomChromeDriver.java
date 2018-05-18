@@ -37,7 +37,7 @@ public class CustomChromeDriver implements DriverSource {
         options.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);
         //Uncomment if you want to run against headless chrome
         options.addArguments("--headless");
-        //options.addArguments("--disable-gpu");
+        options.addArguments("--disable-gpu");
         ChromeDriver chromeDriver = new ChromeDriver(options);
 
         logger.info("Using ChromeDriver with config -> " + chromeDriver.getCapabilities().toString());
