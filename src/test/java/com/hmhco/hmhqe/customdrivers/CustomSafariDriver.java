@@ -15,7 +15,7 @@ public class CustomSafariDriver implements DriverSource {
         SafariOptions options = new SafariOptions();
 
 
-        options.setUseCleanSession(true);
+        //options.setUseCleanSession(true);
 
 
         DesiredCapabilities capabilities = DesiredCapabilities.safari();
